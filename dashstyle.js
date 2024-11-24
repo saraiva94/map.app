@@ -5,7 +5,7 @@ const { width, height } = Dimensions.get('window');
 export default {
   container: {
     flex: 1,
-    backgroundColor: '#000', // Fundo para cobrir toda a tela
+    backgroundColor: '#000',
   },
   background: {
     flex: 1,
@@ -41,17 +41,43 @@ export default {
     maxHeight: 400, // Altura máxima para telas grandes
     borderWidth: 1,
     borderColor: 'gray',
-    borderRadius: 10,
+    borderRadius: 20,
     overflow: 'hidden',
     backgroundColor: 'white',
   },
   map: {
     flex: 1,
   },
+  zoomControls: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    flexDirection: 'column',
+  },
   loadingText: {
     textAlign: 'center',
     marginTop: 20,
     color: 'gray',
+  },
+  zoomButton: {
+    backgroundColor: 'white',
+    padding: 15,
+    borderRadius: 5,
+    marginVertical: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  zoomText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  centerButton: {
+    position: 'absolute',
+    bottom: 100,
+    left: 150,
+    backgroundColor: '#ffff',
+    padding: 10,
+    borderRadius: 5,
   },
   errorText: {
     textAlign: 'center',
@@ -66,6 +92,7 @@ export default {
   },
   logoutButton: {
     backgroundColor: 'red',
+    right: 185,
     padding: 10,
     borderRadius: 5,
   },

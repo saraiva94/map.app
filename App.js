@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Text, View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { Video } from 'expo-av';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useFocusEffect } from '@react-navigation/native'; // Importa o hook para controle do foco
 import Cadastro from './cadastro';
 import RecuperacaoSenha from './recuperacaosenha';
 import Homepage from './homepage';
 import styles from './styles';
 import { auth } from './firebase.config';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { AppRegistry } from 'react-native'; // Adicionado para garantir registro do componente principal
-import { name as appName } from './app.json'; // Nome do aplicativo no app.json
 
 const Stack = createStackNavigator();
 
@@ -20,7 +19,7 @@ export default function App() {
 
   const userLogin = (navigation) => {
     signInWithEmailAndPassword(auth, userMail, userPass)
-      .then((userCredential) => {
+      .then(() => {
         alert('Login efetuado com sucesso!');
         navigation.navigate('dashboard');
       })
@@ -73,18 +72,22 @@ export default function App() {
 
 // Componente da tela inicial (HomeScreen)
 function HomeScreen({ navigation, userLogin, userMail, setUserMail, userPass, setUserPass }) {
-  const handleCadastroPress = () => {
-    navigation.navigate('Cadastro');
-  };
+  const videoRef = useRef(null); // Cria uma referência para o vídeo
 
-  const handleEsqueciSenhaPress = () => {
-    navigation.navigate('RecuperacaoSenha');
-  };
+  // Reinicia o vídeo sempre que a tela está em foco
+  useFocusEffect(
+    React.useCallback(() => {
+      if (videoRef.current) {
+        videoRef.current.replayAsync(); // Reinicia o vídeo ao voltar para a tela
+      }
+    }, [])
+  );
 
   return (
     <View style={styles.container}>
       {/* Vídeo de fundo */}
       <Video
+        ref={videoRef} // Conecta a referência ao componente
         source={require('./assets/reciclagem.mp4')}
         style={StyleSheet.absoluteFill}
         resizeMode="cover"
@@ -119,10 +122,10 @@ function HomeScreen({ navigation, userLogin, userMail, setUserMail, userPass, se
             <Text style={styles.buttonText}>Entrar</Text>
           </TouchableOpacity>
           <View style={styles.linkContainer}>
-            <TouchableOpacity onPress={handleCadastroPress}>
+            <TouchableOpacity onPress={() => navigation.navigate('Cadastro')}>
               <Text style={styles.link}>Cadastre-se</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleEsqueciSenhaPress}>
+            <TouchableOpacity onPress={() => navigation.navigate('RecuperacaoSenha')}>
               <Text style={styles.link}>Esqueci a senha</Text>
             </TouchableOpacity>
           </View>
@@ -131,6 +134,3 @@ function HomeScreen({ navigation, userLogin, userMail, setUserMail, userPass, se
     </View>
   );
 }
-
-// Registro do componente principal
-AppRegistry.registerComponent(appName, () => App);
